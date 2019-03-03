@@ -11,6 +11,7 @@
 #include <kern/syscall.h>
 #include <kern/console.h>
 #include <kern/sched.h>
+#include <kern/time.h>
 
 // Print a string to the system console.
 // The string is exactly 'len' characters long.
@@ -149,7 +150,7 @@ sys_env_set_trapframe(envid_t envid, struct Trapframe *tf)
 	user_mem_assert(e, tf, sizeof(struct Trapframe), PTE_U); //Chequeamos que podamos acceder a ese rango de memoria con este env.
 	e->env_tf = *tf;
 	e->env_tf.tf_eflags |= FL_IF; //Habilitamos interrupts.
-	e->env_tf.tf_cs = GD_UT | 3; 
+	e->env_tf.tf_cs = GD_UT | 3;
 	return 0;
 	//panic("sys_env_set_trapframe not implemented");
 }

@@ -1,5 +1,6 @@
 OBJDIRS += user
 
+USERLIBS += lwip
 
 USERLIBS += jos
 
@@ -14,4 +15,3 @@ $(OBJDIR)/user/%: $(OBJDIR)/user/%.o $(OBJDIR)/lib/entry.o $(USERLIBS:%=$(OBJDIR
 	$(V)$(OBJDUMP) -S $@.debug > $@.asm
 	$(V)$(NM) -n $@.debug > $@.sym
 	$(V)$(OBJCOPY) -R .stab -R .stabstr --add-gnu-debuglink=$(basename $@.debug) $@.debug $@
-

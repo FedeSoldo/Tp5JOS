@@ -14,6 +14,8 @@
 #include <kern/picirq.h>
 #include <kern/cpu.h>
 #include <kern/spinlock.h>
+#include <kern/time.h>
+#include <kern/pci.h>
 
 static void boot_aps(void);
 
@@ -48,14 +50,23 @@ i386_init(void)
 	// Lab 4 multitasking initialization functions
 	pic_init();
 
+	// Lab 6 hardware initialization functions
+	time_init();
+	pci_init();
+
 	// Acquire the big kernel lock before waking up APs
 	// Your code here:
-	lock_kernel();
+
 	// Starting non-boot CPUs
 	boot_aps();
 
 	// Start fs.
 	ENV_CREATE(fs_fs, ENV_TYPE_FS);
+
+#if !defined(TEST_NO_NS)
+	// Start ns.
+	ENV_CREATE(net_ns, ENV_TYPE_NS);
+#endif
 
 #if defined(TEST)
 	// Don't touch -- used by grading script!
@@ -151,7 +162,7 @@ const char *panicstr;
  * It prints "panic: mesg", and then enters the kernel monitor.
  */
 void
-_panic(const char *file, int line, const char *fmt,...)
+_panic(const char *file, int line, const char *fmt, ...)
 {
 	va_list ap;
 
@@ -176,7 +187,7 @@ dead:
 
 /* like panic, but don't */
 void
-_warn(const char *file, int line, const char *fmt,...)
+_warn(const char *file, int line, const char *fmt, ...)
 {
 	va_list ap;
 

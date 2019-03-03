@@ -174,6 +174,10 @@ mem_init(void)
 	memset(envs, 0, NENV * sizeof(struct Env));
 
 	//////////////////////////////////////////////////////////////////////
+	// Make 'envs' point to an array of size 'NENV' of 'struct Env'.
+	// LAB 3: Your code here.
+
+	//////////////////////////////////////////////////////////////////////
 	// Now that we've allocated the initial kernel data structures, we set
 	// up the list of free physical pages. Once we've done so, all further
 	// memory management will go through the page_* functions. In
@@ -210,6 +214,14 @@ mem_init(void)
 	boot_map_region(kern_pgdir, UENVS, size, PADDR(envs), PTE_U | PTE_P);
 
 	//////////////////////////////////////////////////////////////////////
+	// Map the 'envs' array read-only by the user at linear address UENVS
+	// (ie. perm = PTE_U | PTE_P).
+	// Permissions:
+	//    - the new image at UENVS  -- kernel R, user R
+	//    - envs itself -- kernel RW, user NONE
+	// LAB 3: Your code here.
+
+	//////////////////////////////////////////////////////////////////////
 	// Use the physical memory that 'bootstack' refers to as the kernel
 	// stack.  The kernel stack grows down from virtual address KSTACKTOP.
 	// We consider the entire range from [KSTACKTOP-PTSIZE, KSTACKTOP)
@@ -238,6 +250,9 @@ mem_init(void)
 	// Your code goes here:
 	size = ROUNDDOWN((2 ^ 32) - KERNBASE, PGSIZE);
 boot_map_region(kern_pgdir, KERNBASE, size, (physaddr_t) 0, PTE_W | PTE_P);
+
+	// Initialize the SMP-related parts of the memory map
+	mem_init_mp();
 
 	// Initialize the SMP-related parts of the memory map
 	mem_init_mp();
