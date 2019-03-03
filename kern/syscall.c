@@ -427,6 +427,13 @@ sys_ipc_recv(void *dstva)
 	sched_yield();
 }
 
+
+static int
+sys_time_msec(void)
+{
+	return time_msec(); //Devuelvo el valor del tiempo
+}
+
 // Dispatches to the correct kernel function, passing the arguments.
 int32_t
 syscall(uint32_t syscallno, uint32_t a1, uint32_t a2, uint32_t a3, uint32_t a4, uint32_t a5)
@@ -479,6 +486,9 @@ syscall(uint32_t syscallno, uint32_t a1, uint32_t a2, uint32_t a3, uint32_t a4, 
 
 	case SYS_env_set_trapframe:
 		return sys_env_set_trapframe(a1, (void *)a2);
+
+	case SYS_time_msec:
+		return sys_time_msec();
 
 	default:
 		return -E_INVAL;
