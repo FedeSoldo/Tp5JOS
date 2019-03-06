@@ -109,9 +109,6 @@ boot_alloc(uint32_t n)
 	//
 	// LAB 2: Your code here.
 
-<<<<<<< HEAD
-	return NULL;
-=======
 	if (n != 0) {
 		result = nextfree;
 		nextfree = ROUNDUP((char *) (nextfree + n), PGSIZE);
@@ -120,7 +117,6 @@ boot_alloc(uint32_t n)
 		return result;
 	} else
 		return nextfree;
->>>>>>> 18c82ead1872b1f5b437bb8f6ae5ba83b51e3d94
 }
 
 // Set up a two-level page table:
@@ -168,8 +164,6 @@ mem_init(void)
 	// to initialize all fields of each struct PageInfo to 0.
 	// Your code goes here:
 
-<<<<<<< HEAD
-=======
 	pages = (struct PageInfo *) boot_alloc(npages * sizeof(struct PageInfo));
 	memset(pages, 0, npages * sizeof(struct PageInfo));
 
@@ -180,7 +174,6 @@ mem_init(void)
 
 	envs = (struct Env *) boot_alloc(NENV * sizeof(struct Env));
 	memset(envs, 0, NENV * sizeof(struct Env));
->>>>>>> 18c82ead1872b1f5b437bb8f6ae5ba83b51e3d94
 
 	//////////////////////////////////////////////////////////////////////
 	// Now that we've allocated the initial kernel data structures, we set
@@ -204,11 +197,8 @@ mem_init(void)
 	//      (ie. perm = PTE_U | PTE_P)
 	//    - pages itself -- kernel RW, user NONE
 	// Your code goes here:
-<<<<<<< HEAD
-=======
 	size_t size = ROUNDUP(npages * sizeof(struct PageInfo), PGSIZE);
 	boot_map_region(kern_pgdir, UPAGES, PTSIZE, PADDR(pages), PTE_U | PTE_P);
->>>>>>> 18c82ead1872b1f5b437bb8f6ae5ba83b51e3d94
 
 	//////////////////////////////////////////////////////////////////////
 	// Map the 'envs' array read-only by the user at linear address UENVS
@@ -233,8 +223,6 @@ mem_init(void)
 	//     Permissions: kernel RW, user NONE
 	// Your code goes here:
 
-<<<<<<< HEAD
-=======
 	boot_map_region(kern_pgdir,
 	                KSTACKTOP - KSTKSIZE,
 	                KSTKSIZE,
@@ -242,7 +230,6 @@ mem_init(void)
 	                PTE_W | PTE_P);
 
 
->>>>>>> 18c82ead1872b1f5b437bb8f6ae5ba83b51e3d94
 	//////////////////////////////////////////////////////////////////////
 	// Map all of physical memory at KERNBASE.
 	// Ie.  the VA range [KERNBASE, 2^32) should map to
@@ -254,12 +241,9 @@ mem_init(void)
 	size = ROUNDDOWN((2 ^ 32) - KERNBASE, PGSIZE);
 boot_map_region(kern_pgdir, KERNBASE, size, (physaddr_t) 0, PTE_W | PTE_P);
 
-<<<<<<< HEAD
-=======
 	// Initialize the SMP-related parts of the memory map
 	mem_init_mp();
 
->>>>>>> 18c82ead1872b1f5b437bb8f6ae5ba83b51e3d94
 	// Check that the initial page directory has been set up correctly.
 	check_kern_pgdir();
 
@@ -356,12 +340,6 @@ page_init(void)
 	// NB: DO NOT actually touch the physical memory corresponding to
 	// free pages!
 	size_t i;
-<<<<<<< HEAD
-	for (i = 0; i < npages; i++) {
-		pages[i].pp_ref = 0;
-		pages[i].pp_link = page_free_list;
-		page_free_list = &pages[i];
-=======
 	physaddr_t pp_address;
 	void *ka;
 
@@ -380,7 +358,6 @@ page_init(void)
 			pages[i].pp_link = page_free_list;
 			page_free_list = &pages[i];
 		}
->>>>>>> 18c82ead1872b1f5b437bb8f6ae5ba83b51e3d94
 	}
 }
 
@@ -399,10 +376,6 @@ page_init(void)
 struct PageInfo *
 page_alloc(int alloc_flags)
 {
-<<<<<<< HEAD
-	// Fill this function in
-	return 0;
-=======
 	if (page_free_list) {
 		struct PageInfo *ret = page_free_list;
 		page_free_list = page_free_list->pp_link;
@@ -414,7 +387,6 @@ page_alloc(int alloc_flags)
 		return ret;
 	}
 	return NULL;
->>>>>>> 18c82ead1872b1f5b437bb8f6ae5ba83b51e3d94
 }
 
 //
@@ -427,14 +399,11 @@ page_free(struct PageInfo *pp)
 	// Fill this function in
 	// Hint: You may want to panic if pp->pp_ref is nonzero or
 	// pp->pp_link is not NULL.
-<<<<<<< HEAD
-=======
 	if ((pp->pp_ref != 0) | (pp->pp_link != NULL))
 		panic("page_free: Try to free a page that cannot be freed\n");
 	pp->pp_link = page_free_list;
 	pp->pp_ref = 0;
 	page_free_list = pp;
->>>>>>> 18c82ead1872b1f5b437bb8f6ae5ba83b51e3d94
 }
 
 //
@@ -473,12 +442,6 @@ page_decref(struct PageInfo *pp)
 pte_t *
 pgdir_walk(pde_t *pgdir, const void *va, int create)
 {
-<<<<<<< HEAD
-	// Fill this function in
-	return NULL;
-}
-
-=======
 	pde_t *pgdir_entry = &pgdir[PDX(va)]; /*Esta bien ?*/
 	if (!(*pgdir_entry & PTE_P)) {
 		if (!create)
@@ -494,7 +457,6 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
 }
 
 
->>>>>>> 18c82ead1872b1f5b437bb8f6ae5ba83b51e3d94
 //
 // Map [va, va+size) of virtual address space to physical [pa, pa+size)
 // in the page table rooted at pgdir.  Size is a multiple of PGSIZE, and
@@ -509,9 +471,6 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
 static void
 boot_map_region(pde_t *pgdir, uintptr_t va, size_t size, physaddr_t pa, int perm)
 {
-<<<<<<< HEAD
-	// Fill this function in
-=======
 #ifndef TP1_PSE
 	pte_t *pte;
 	for (size_t j = 0; j < size / PGSIZE; j++) {
@@ -536,7 +495,6 @@ boot_map_region(pde_t *pgdir, uintptr_t va, size_t size, physaddr_t pa, int perm
 		}
 	}
 #endif
->>>>>>> 18c82ead1872b1f5b437bb8f6ae5ba83b51e3d94
 }
 
 //
@@ -567,9 +525,6 @@ boot_map_region(pde_t *pgdir, uintptr_t va, size_t size, physaddr_t pa, int perm
 int
 page_insert(pde_t *pgdir, struct PageInfo *pp, void *va, int perm)
 {
-<<<<<<< HEAD
-	// Fill this function in
-=======
 	/*VER Requirements*/
 	pte_t *pte = pgdir_walk(pgdir, va, 1);
 	if (!pte)
@@ -579,7 +534,6 @@ page_insert(pde_t *pgdir, struct PageInfo *pp, void *va, int perm)
 		page_remove(pgdir, va);
 	}
 	*pte = page2pa(pp) | perm | PTE_P;
->>>>>>> 18c82ead1872b1f5b437bb8f6ae5ba83b51e3d94
 	return 0;
 }
 
@@ -597,10 +551,6 @@ page_insert(pde_t *pgdir, struct PageInfo *pp, void *va, int perm)
 struct PageInfo *
 page_lookup(pde_t *pgdir, void *va, pte_t **pte_store)
 {
-<<<<<<< HEAD
-	// Fill this function in
-	return NULL;
-=======
 	pte_t *pte = pgdir_walk(pgdir, va, 0);
 	if (!pte)
 		return NULL;
@@ -611,7 +561,6 @@ page_lookup(pde_t *pgdir, void *va, pte_t **pte_store)
 	if (pte_store != 0) *pte_store = pte;
 
 	return pa2page(pa);
->>>>>>> 18c82ead1872b1f5b437bb8f6ae5ba83b51e3d94
 }
 
 //
@@ -632,9 +581,6 @@ page_lookup(pde_t *pgdir, void *va, pte_t **pte_store)
 void
 page_remove(pde_t *pgdir, void *va)
 {
-<<<<<<< HEAD
-	// Fill this function in
-=======
 	struct PageInfo *page = page_lookup(pgdir, va, 0);
 	if (page) {
 		page_decref(page);
@@ -643,7 +589,6 @@ page_remove(pde_t *pgdir, void *va)
 			*pte = 0;
 		tlb_invalidate(pgdir, va);
 	}
->>>>>>> 18c82ead1872b1f5b437bb8f6ae5ba83b51e3d94
 }
 
 //
